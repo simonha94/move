@@ -35,6 +35,7 @@ def preprocess():
     """here we want to loop through the files in the /u2_test directory and create the dataset_dict"""
     data = []
     labels = []
+    titles = []
     for file in os.listdir(u2_test_dir):
 
         cremaPCP = np_to_move_dim(load_h5_to_np(u2_test_dir + '/' + file))  # loading the cremaPCP features for the ith song of your dataset
@@ -43,9 +44,11 @@ def preprocess():
 
         data.append(cremaPCP)
         labels.append(label)
+        titles.append(file)
 
-    dataset_dict = {'data': data, 'labels': labels}
+    dataset_dict = {'data': data, 'labels': labels, "titles": titles}
     #print("Labels")
+    print(titles)
     for key, value in dataset_dict.items():
     	if key == 'labels':
     		print(value)

@@ -104,7 +104,7 @@ def evaluate(save_name,
     # calculating the pairwise distances
     dist_map_matrix = test(move_model=move_model,
                            test_loader=test_map_loader).cpu()
-
+    print("Distances: \n {}".format(dist_map_matrix))
     # calculating the performance metrics
     average_precision(
         -1 * dist_map_matrix.clone() + torch.diag(torch.ones(len(test_data)) * float('-inf')), dataset=dataset)
