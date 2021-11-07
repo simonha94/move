@@ -4,8 +4,8 @@ import numpy as np
 import os
 
 
-#root_dir = '/home/hachmeier/move'
-root_dir = '/home/simon/Documents/repos/move'
+root_dir = '/home/hachmeier/move'
+#root_dir = '/home/simon/Documents/repos/move'
 data_dir = root_dir + '/data'
 u2_test_dir = data_dir + '/u2_test'
 
@@ -37,18 +37,20 @@ def preprocess():
     labels = []
     for file in os.listdir(u2_test_dir):
 
-        cremaPCP = load_h5_to_np(u2_test_dir + '/' + file)  # loading the cremaPCP features for the ith song of your dataset
+        cremaPCP = np_to_move_dim(load_h5_to_np(u2_test_dir + '/' + file))  # loading the cremaPCP features for the ith song of your dataset
+        #print("Shape of crema feature: {}".format(cremaPCP.shape))
         label = file[0]  # loading the label of the ith song of your dataset, indicated by filename prefix
 
         data.append(cremaPCP)
         labels.append(label)
 
     dataset_dict = {'data': data, 'labels': labels}
-    
+    #print("Labels")
     for key, value in dataset_dict.items():
     	if key == 'labels':
     		print(value)
-
+    for dataf in data:
+        print("Data.shape: {}".format(dataf.shape))
     torch.save(dataset_dict, os.path.join(root_dir, 'data', 'benchmark_crema.pt'))
 
 
