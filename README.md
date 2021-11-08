@@ -201,91 +201,23 @@ python move_main.py --train_path my_training_set --chunks 3
 
 ```
 
-Current version of our code does not support using more than one file for the validation set.
+### 4 - Preprocessing & store computed distance matrix
+For training MOVE with a private dataset, you should follow the steps below:
 
-The training procedure of MOVE tracks Mean Average Precision (MAP) score on the validation set for each epoch. To compute MAP, you need to provide an annotations file under the `data` folder. You can see an example of how to create such file at 2.2.2. The name of your annotations file for your validation set should be `ytrue_validation.pt`.
+#### 4.1 Run Script preprocessing.py 
+TODO: change the logic to get the song ID. This for now just works with one digit IDs!
+Here, we preprocess the files found in data/u2_test. Please note, that each first digit in the file name (e.g. 1 or 2) indicates the label or the ID for the song.
 
-#### 3.3 - Running the training code
-After preparing the dataset and annotations files, you can run the training procedure with the following command:
+#### 4.2 Run Evaluation Script
+Please check the command above. This is the standard procedure.
 
-```bash
-python move_main.py
-```
-```
-usage: move_main.py [-h] [-rt {train,test}] [-tp TRAIN_PATH] [-ch CHUNKS]
-                    [-vp VAL_PATH] [-sm {0,1}] [-ss {0,1}] [-rs RANDOM_SEED]
-                    [-noe NUM_OF_EPOCHS] [-m {0,1}] [-emb EMB_SIZE]
-                    [-sum {0,1,2,3,4}] [-fa {0,1,2,3}] [-lr LEARNING_RATE]
-                    [-lrs {0,1,2}] [-lrsf LRSCH_FACTOR] [-mo MOMENTUM]
-                    [-pl PATCH_LEN] [-nol NUM_OF_LABELS] [-da {0,1}]
-                    [-nd {0,1}] [-ms {0,1,2}] [-ma MARGIN] [-ytc {0,1}]
-                    [-d {0,1,2}] [-dn DATASET_NAME]
+### 4.3. TBA:
+How to store all the computations in distance matrices?
 
-Training code of MOVE
 
-optional arguments:
-  -h, --help            show this help message and exit
-  -rt {train,test}, --run_type {train,test}
-                        Whether to run train or test script
-  -tp TRAIN_PATH, --train_path TRAIN_PATH
-                        Path for training data. If more than one file are
-                        used, write only the common part
-  -ch CHUNKS, --chunks CHUNKS
-                        Number of chunks for training set
-  -vp VAL_PATH, --val_path VAL_PATH
-                        Path for validation data
-  -sm {0,1}, --save_model {0,1}
-                        1 for saving the trained model, 0 for otherwise
-  -ss {0,1}, --save_summary {0,1}
-                        1 for saving the training log, 0 for otherwise
-  -rs RANDOM_SEED, --random_seed RANDOM_SEED
-                        Random seed
-  -noe NUM_OF_EPOCHS, --num_of_epochs NUM_OF_EPOCHS
-                        Number of epochs for training
-  -m {0,1}, --model_type {0,1}
-                        0 for MOVE, 1 for MOVE without pitch transposition
-  -emb EMB_SIZE, --emb_size EMB_SIZE
-                        Size of the final embeddings
-  -sum {0,1,2,3,4}, --sum_method {0,1,2,3,4}
-                        0 for max-pool, 1 for mean-pool, 2 for autopool, 3 for
-                        multi-channel attention, 4 for multi-channel adaptive
-                        attention
-  -fa {0,1,2,3}, --final_activation {0,1,2,3}
-                        0 for no activation, 1 for sigmoid, 2 for tanh, 3 for
-                        batch norm
-  -lr LEARNING_RATE, --learning_rate LEARNING_RATE
-                        Initial learning rate
-  -lrs {0,1,2}, --lr_schedule {0,1,2}
-                        0 for no lr_schedule, 1 for decreasing lr at epoch 80,
-                        2 for decreasing lr at epochs [80, 100]
-  -lrsf LRSCH_FACTOR, --lrsch_factor LRSCH_FACTOR
-                        Factor for lr scheduler
-  -mo MOMENTUM, --momentum MOMENTUM
-                        Value for momentum parameter for SGD
-  -pl PATCH_LEN, --patch_len PATCH_LEN
-                        Size of the input len in time dimension
-  -nol NUM_OF_LABELS, --num_of_labels NUM_OF_LABELS
-                        Number of cliques per batch for triplet mining
-  -da {0,1}, --data_aug {0,1}
-                        0 for no data aug, 1 using it
-  -nd {0,1}, --norm_dist {0,1}
-                        1 for normalizing the distance, 0 for avoiding it
-  -ms {0,1,2}, --mining_strategy {0,1,2}
-                        0 for only random, 1 for only semi-hard, 2 for only
-                        hard
-  -ma MARGIN, --margin MARGIN
-                        Margin for triplet loss
-  -ytc {0,1}, --ytc_labels {0,1}
-                        0 for using full training data, 1 for removing
-                        overlapping labels with ytc
-  -d {0,1,2}, --dataset {0,1,2}
-                        Choosing evaluation set for testing. 0 for move
-                        validation, 1 for test on da-tacos, 2 for test on ytc
-  -dn DATASET_NAME, --dataset_name DATASET_NAME
-                        Specifying a dataset name for evaluation. The dataset
-                        must be located in the data folder
 
-```
+
+
 
 ## Questions
 For any questions you may have, feel free to create an issue or contact [me](mailto:furkan.yesiler@upf.edu).
