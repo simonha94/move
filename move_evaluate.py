@@ -52,7 +52,7 @@ def evaluate(save_name,
              sum_method,
              final_activation,
              dataset,
-             dataset_name
+             dataset_name, prediction_file
              ):
     """
     Main evaluation function of MOVE. For a detailed explanation of parameters,
@@ -102,9 +102,48 @@ def evaluate(save_name,
     test_map_loader = DataLoader(test_map_set, batch_size=1, shuffle=False)
 
     # calculating the pairwise distances
-    dist_map_matrix = test(move_model=move_model,
-                           test_loader=test_map_loader).cpu()
-    print("Distances: \n {}".format(dist_map_matrix))
-    # calculating the performance metrics
-    average_precision(
-        -1 * dist_map_matrix.clone() + torch.diag(torch.ones(len(test_data)) * float('-inf')), dataset=dataset)
+    if prediction_file:
+        df = pd.read_csv(csv_file, sep=";")
+        print("computing distances for file " + csv_file)
+        df = predict_for_df(df)
+        df.to_csv('c_' + csv_file, sep=";", index=False)
+    else:
+        dist_map_matrix = test(move_model=move_model,
+                               test_loader=test_map_loader).cpu()
+        print("Distances: \n {}".format(dist_map_matrix))
+        torch.save(dist_map_matrix, 'results/distances.pt')
+        # calculating the performance metrics
+        average_precision(
+            -1 * dist_map_matrix.clone() + torch.diag(torch.ones(len(test_data)) * float('-inf')), dataset=dataset)
+
+
+def predict_for_df(df):
+    """given a csv containing file paths to originals and variants, the difference scores are computed"""
+    try:
+        df.rename({'diff_score': 'csi_score'}, inplace = True)
+    except KeyError:
+        print("No renaming of diff_score column")
+        pass
+
+    df["move_score"] = df.apply(get_move_score, axis=1)
+
+    return df
+
+
+def get_move_score(row):
+    try:
+        if pd.isnull(row["original_crema_file_path"]):
+            return -1
+
+        if pd.isnull(row["variant_crema_file_path"]):
+            return -1
+
+        o_file = datacos_crema_dir + row["original_crema_file_path"]
+        v_file = yt_download_crema_dir + row["variant_crema_file_path"]
+        o_cr = preprocess.np_to_move_dim(preprocess.load_h5_to_np(o_file))
+        v_cr = preprocess.np_to_move_dim(preprocess.load_h5_to_np(v_file))
+        score = move_evaluate.get_score(move_model, o_cr, v_cr).cpu()
+        return score[0][1].detach().cpu().numpy()
+    except Exception as e:
+        print(e, o_file, v_file)
+        return -1
