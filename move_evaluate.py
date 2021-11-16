@@ -52,7 +52,7 @@ def evaluate(save_name,
              sum_method,
              final_activation,
              dataset,
-             dataset_name, prediction_file
+             dataset_name, prediction_file=None
              ):
     """
     Main evaluation function of MOVE. For a detailed explanation of parameters,
